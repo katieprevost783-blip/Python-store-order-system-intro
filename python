@@ -1,0 +1,90 @@
+# ======= Store Setup =======
+candles_price = 7.99
+plushies_price = 6.25
+jewelry_price = 10.00
+tax_rate = 0.13
+
+orders = []
+
+# ======= Main Order Loop =======
+while True:
+    print("\n===== NEW ORDER =====")
+
+    # Ask if customer wants to place an order
+    while True:
+        place_order = input("Would you like to place an order? (yes/no): ").strip().lower()
+        if place_order in ["yes", "no"]:
+            break
+        print("Error: please type 'yes' or 'no'.")
+
+    if place_order == "no":
+        print("No more orders. Ending program.")
+        break
+
+    # Ask for customer info
+    customer_name = input("Customer Name: ").strip()
+    customer_email = input("Customer Email: ").strip()
+
+    # Input quantities with validation
+    while True:
+        try:
+            candles_bought = int(input("How many candles? "))
+            plushies_bought = int(input("How many plushies? "))
+            jewelry_bought = int(input("How many jewelry items? "))
+            if candles_bought < 0 or plushies_bought < 0 or jewelry_bought < 0:
+                print("Please enter a positive number.")
+                continue
+            break
+        except ValueError:
+            print("Invalid input. Please enter numbers only.")
+
+    # Calculate totals
+    candles_total = candles_bought * candles_price
+    plushies_total = plushies_bought * plushies_price
+    jewelry_total = jewelry_bought * jewelry_price
+
+    subtotal = candles_total + plushies_total + jewelry_total
+    tax = subtotal * tax_rate
+    total = subtotal + tax
+
+    # Store order info
+    order = {
+        "customer_name": customer_name,
+        "customer_email": customer_email,
+        "candles": candles_bought,
+        "plushies": plushies_bought,
+        "jewelry": jewelry_bought,
+        "subtotal": round(subtotal, 2),
+        "tax": round(tax, 2),
+        "total": round(total, 2)
+    }
+
+    orders.append(order)
+
+    # Print order receipt
+    print("\n--- ORDER RECEIPT ---")
+    print(f"Customer: {customer_name} | Email: {customer_email}")
+    print(f"Candles: {candles_bought} x ${candles_price} = ${candles_total:.2f}")
+    print(f"Plushies: {plushies_bought} x ${plushies_price} = ${plushies_total:.2f}")
+    print(f"Jewelry: {jewelry_bought} x ${jewelry_price} = ${jewelry_total:.2f}")
+    print(f"Subtotal: ${subtotal:.2f}")
+    print(f"Tax: ${tax:.2f}")
+    print(f"Total: ${total:.2f}")
+    print("--------------------")
+
+# ======= Daily Summary =======
+daily_total = sum(order["total"] for order in orders)
+average_order = daily_total / len(orders) if orders else 0
+
+print("\n===== DAILY SUMMARY =====")
+print(f"Total sales: ${daily_total:.2f}")
+print(f"Average order: ${average_order:.2f}")
+print(f"Total orders: {len(orders)}")
+
+# Optional: print all orders nicely
+print("\nOrders Data:")
+for i, order in enumerate(orders, start=1):
+    print(f"\nOrder #{i}:")
+    print(f"Customer: {order['customer_name']} | Email: {order['customer_email']}")
+    print(f"Candles: {order['candles']} | Plushies: {order['plushies']} | Jewelry: {order['jewelry']}")
+print(f"Subtotal: ${order['subtotal']} | Tax: ${order['tax']} | Total: ${order['total']}")
